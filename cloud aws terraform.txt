@@ -1,0 +1,503 @@
+Terraform
+
+1.Intilization- one time process
+2. Execute plan
+3. Apply
+
+
+terraform --Version
+proivder "aws{
+}
+----------------
+terraform plan
+
+terraform apply
+terraform graph
+
+provider "aws"{
+	access_key ="AKIAZTIMJ7JHCYU3MWGO"
+	secret_key ="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"
+	region = "eu-west-1"
+}
+resource "aws_instance" "Deepakterraform"{
+	ami ="ami-0bbc25e23a7640b9b"
+	instance_type="t2.medium"
+tags = {
+ Name = "Deepakinstance"
+}
+}
+resource "aws_instance" "Deepak2terraform"{
+	ami ="ami-0bbc25e23a7640b9b"
+	instance_type="t2.micro"
+tags = {
+ Name = "Deepak2instance"
+}
+}
+------------------------------------
+terraform show
+terraform state list - will show the list of machine
+
+terraform destroy -target aws_instance.Deepak2terraform 
+------------------
+
+key pair
+
+provider "aws"{
+	access_key ="AKIAZTIMJ7JHCYU3MWGO"
+	secret_key ="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"
+	region = "eu-west-1"
+}
+resource "aws_instance" "Deepakterraform"{
+	ami ="ami-0bbc25e23a7640b9b"
+	instance_type="t2.medium"
+tags = {
+ Name = "Deepakinstance"
+}
+}
+resource "aws_key_pair" "Deepakkey"{
+	key_name = "Deepakkeypair"
+	public_key = "${file("C:\\Deepak\\deepak.pub")}"
+}
+--------------------------------------------
+
+rovider "aws"{
+	access_key ="AKIAZTIMJ7JHCYU3MWGO"
+	secret_key ="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"
+	region = "eu-west-1"
+}
+resource "aws_instance" "Deepakterraform"{
+	ami ="ami-0bbc25e23a7640b9b"
+	instance_type="t2.micro"
+key_name="${aws_key_pair.Deepakkey.id}"
+vpc_security_group_ids=["${aws_security_group.Deepaksecurity.name}"]
+tags = {
+ Name = "Deepakinstance"
+}
+}
+resource "aws_security_group" "Deepaksecurity"{
+name="Deepaksecurity"
+description="desc"
+ingress{
+from_port="0"
+to_port="0"
+protocol="-1"
+cidr_blocks=["0.0.0.0/0"]
+}
+egress{
+from_port="0"
+to_port="0"
+protocol="-1"
+cidr_blocks=["0.0.0.0/0"]
+}
+}
+
+resource "aws_key_pair" "Deepakkey"{
+	key_name = "Deepakkeypair"
+	public_key = "${file("C:\\Deepak\\deepak.pub")}"
+}
+-----------------------------------------
+
+provider "aws"{
+	access_key ="AKIAZTIMJ7JHCYU3MWGO"
+	secret_key ="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"
+	region = "eu-west-1"
+}
+resource "aws_instance" "Deepakterraform"{
+	ami ="ami-0bbc25e23a7640b9b"
+	instance_type="t2.micro"
+key_name="${aws_key_pair.Deepakkey.id}"
+vpc_security_group_ids=["${aws_security_group.Deepaksecurity.id}"]
+tags = {
+ Name = "Deepakinstance"
+}
+}
+
+resource "aws_security_group" "Deepaksecurity"{
+name="Deepaksecurity"
+description="desc"
+ingress{
+from_port="0"
+to_port="0"
+protocol="-1"
+cidr_blocks=["0.0.0.0/0"]
+}
+egress{
+from_port="0"
+to_port="0"
+protocol="-1"
+cidr_blocks=["0.0.0.0/0"]
+}
+}
+
+resource "aws_key_pair" "Deepakkey"{
+	key_name = "Deepakkeypair"
+	public_key = "${file("C:\\Deepak\\deepak.pub")}"
+}
+
+output "Deepakpubliccip"{
+ value = "${aws_instance.Deepakterraform.public_ip}"
+}
+---------------------------------
+
+provider "aws"{
+	access_key ="AKIAZTIMJ7JHCYU3MWGO"
+	secret_key ="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"
+	region = "eu-west-1"
+}
+resource "aws_instance" "Deepakterraform"{
+	ami ="ami-0bbc25e23a7640b9b"
+	instance_type="t2.micro"
+key_name="${aws_key_pair.Deepakkey.id}"
+vpc_security_group_ids=["${aws_security_group.Deepaksecurity.id}"]
+tags = {
+ Name = "Deepakinstance"
+}
+provisioner "local-exec" {
+ when = "create"
+command = "echo $(aws_instance.Deepakterraform.public_ip}>sample.txt"
+}
+}
+
+
+
+resource "aws_security_group" "Deepaksecurity"{
+name="Deepaksecurity"
+description="desc"
+ingress{
+from_port="0"
+to_port="0"
+protocol="-1"
+cidr_blocks=["0.0.0.0/0"]
+}
+egress{
+from_port="0"
+to_port="0"
+protocol="-1"
+cidr_blocks=["0.0.0.0/0"]
+}
+}
+
+resource "aws_key_pair" "Deepakkey"{
+	key_name = "Deepakkeypair"
+	public_key = "${file("C:\\Deepak\\deepak.pub")}"
+}
+
+output "Deepakpubliccip"{
+ value = "${aws_instance.Deepakterraform.public_ip}"
+}
+
+---------------------------------------------
+
+elastic eip
+
+	access_key ="AKIAZTIMJ7JHCYU3MWGO"
+	secret_key ="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"
+	region = "eu-west-1"
+}
+
+resource "aws_eip" "Deepakeip" {
+tags = {
+ Name= "Deepakeslaticip"
+}
+instance ="${aws_instance.Deepakterraform.id}"
+}
+resource "aws_instance" "Deepakterraform"{
+	ami ="ami-0bbc25e23a7640b9b"
+	instance_type="t2.micro"
+key_name="${aws_key_pair.Deepakkey.id}"
+vpc_security_group_ids=["${aws_security_group.Deepaksecurity.id}"]
+tags = {
+ Name = "Deepakinstance"
+}
+provisioner "local-exec" {
+ when = "create"
+command = "echo $(aws_instance.Deepakterraform.public_ip}>sample.txt"
+}
+}
+
+resource "aws_security_group" "Deepaksecurity"{
+name="Deepaksecurity"
+description="desc"
+ingress{
+from_port="0"
+to_port="0"
+protocol="-1"
+cidr_blocks=["0.0.0.0/0"]
+}
+egress{
+from_port="0"
+to_port="0"
+protocol="-1"
+cidr_blocks=["0.0.0.0/0"]
+}
+}
+
+resource "aws_key_pair" "Deepakkey"{
+	key_name = "Deepakkeypair"
+	public_key = "${file("C:\\Deepak\\deepak.pub")}"
+}
+
+output "Deepakpubliccip"{
+ value = "${aws_instance.Deepakterraform.public_ip}"
+}
+
+-------------------
+declaring varialbles in different file
+
+variable "access_key"{}
+variable "secret_key" {}
+variable "region" {
+default ="eu-west-1"
+}
+
+---------
+provider "aws"{
+	access_key ="${var.access_key}"
+	secret_key ="${var.secret_key}"
+	region = "${var.region}"
+}
+
+resource "aws_eip" "Deepakeip" {
+tags = {
+ Name= "Deepakeslaticip"
+}
+instance ="${aws_instance.Deepakterraform.id}"
+}
+resource "aws_instance" "Deepakterraform"{
+	ami ="ami-0bbc25e23a7640b9b"
+	instance_type="t2.micro"
+key_name="${aws_key_pair.Deepakkey.id}"
+vpc_security_group_ids=["${aws_security_group.Deepaksecurity.id}"]
+tags = {
+ Name = "Deepakinstance"
+}
+provisioner "local-exec" {
+ when = "create"
+command = "echo $(aws_instance.Deepakterraform.public_ip}>sample.txt"
+}
+}
+
+resource "aws_security_group" "Deepaksecurity"{
+name="Deepaksecurity"
+description="desc"
+ingress{
+from_port="0"
+to_port="0"
+protocol="-1"
+cidr_blocks=["0.0.0.0/0"]
+}
+egress{
+from_port="0"
+to_port="0"
+protocol="-1"
+cidr_blocks=["0.0.0.0/0"]
+}
+}
+
+resource "aws_key_pair" "Deepakkey"{
+	key_name = "Deepakkeypair"
+	public_key = "${file("C:\\Deepak\\deepak.pub")}"
+}
+
+output "Deepakpubliccip"{
+ value = "${aws_instance.Deepakterraform.public_ip}"
+}
+
+---------------------------------
+
+creating a bucket in S3
+
+provider "aws"{
+	access_key ="AKIAZTIMJ7JHPVODYVZA"
+	secret_key ="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"
+	region = "eu-west-1"
+}
+resource "aws_eip" "Deepakeip" {
+tags = {
+ Name= "Deepakeslaticip"
+}
+instance ="${aws_instance.Deepakterraform.id}"
+}
+resource "aws_instance" "Deepakterraform"{
+	ami ="ami-0bbc25e23a7640b9b"
+	instance_type="t2.micro"
+key_name="${aws_key_pair.Deepakkey.id}"
+vpc_security_group_ids=["${aws_security_group.Deepaksecurity.id}"]
+tags = {
+ Name = "Deepakinstance"
+}
+provisioner "local-exec" {
+ when = "create"
+command = "echo $(aws_instance.Deepakterraform.public_ip}>sample.txt"
+}
+}
+
+resource "aws_security_group" "Deepaksecurity"{
+name="Deepaksecurity"
+description="desc"
+ingress{
+from_port="0"
+to_port="0"
+protocol="-1"
+cidr_blocks=["0.0.0.0/0"]
+}
+egress{
+from_port="0"
+to_port="0"
+protocol="-1"
+cidr_blocks=["0.0.0.0/0"]
+}
+}
+
+resource "aws_key_pair" "Deepakkey"{
+	key_name = "Deepakkeypair"
+	public_key = "${file("C:\\Deepak\\deepak.pub")}"
+}
+
+output "Deepakpubliccip"{
+ value = "${aws_instance.Deepakterraform.public_ip}"
+}
+----
+resource "aws_s3_bucket" "badmintonbucket"{
+bucket = "azonicsbucket"
+acl = "private"
+force_destroy="true"
+}
+
+terraform {
+backend "s3"{
+bucket = "azonicsbucket"
+key = "terraform.tfstate"
+region = "eu-west-1"
+}
+}
+
+---
+
+terraform init -backend-config="access_key=AKIAZTIMJ7JHPVODYVZA" -backend-config="secret_key=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"
+
+--------------------------------------------------------------------------------
+
+chef - uses ruby language 
+used to create a platform for softwares to be installed on the system created
+
+chef server - manage nodes
+chef workstation - has a compentent chef development kit inorder to develop a instructionfor example to instal on target)
+chef nodes- Target system
+
+chef development kit
+
+Install java8 | _Recipes
+Service http |
+ The recipies  togehter form cook book which will be pushed to server and from server noses will pull the cook books
+
+https://manage.chef.io/organizations
+
+create chef
+
+poweshell
+
+chef-starter> cd .\chef-repo\.chef
+Deepak\chef-starter\chef-repo\.chef> knife ssl fetch
+Deepak\chef-starter\chef-repo\.chef> knife ssl check
+C:\Deepak\chef-starter\chef-repo> cd cookbooks
+
+C:\Deepak\chef-starter\chef-repo\cookbooks> chef generate cookbook testenv_aws_tf_chef
+
+C:\Deepak\chef-starter\chef-repo\cookbooks\testenv_aws_tf_chef
+inside this loction 
+
+knife cookbook upload testenv_aws_tf_chef
+
+should be used each time for running new provsioner
+--------------------------------
+terraform taint aws_instance.Deepakterraform
+
+
+provider "aws"{
+	access_key ="AKIAZTIMJ7JHPVODYVZA"
+	secret_key ="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"
+	region = "eu-west-1"
+}
+resource "aws_eip" "Deepakeip" {
+tags = {
+ Name= "Deepakeslaticip"
+}
+instance ="${aws_instance.Deepakterraform.id}"
+}
+resource "aws_instance" "Deepakterraform"{
+	ami ="ami-0bbc25e23a7640b9b"
+	instance_type="t2.micro"
+key_name="${aws_key_pair.Deepakkey.id}"
+vpc_security_group_ids=["${aws_security_group.Deepaksecurity.id}"]
+tags = {
+ Name = "Deepakinstance"
+}
+provisioner "local-exec" {
+ when = "create"
+command = "echo $(aws_instance.Deepakterraform.public_ip}>sample.txt"
+}
+
+provisioner "chef" {
+ connection {
+ host = "${self.public_ip}"
+ type = "ssh"
+ user = "ec2-user"
+ private_key  = "${file("C:\\Deepak\\Deepak.pem")}"
+}
+client_options = [ "chef_license 'accept'"]
+run_list = ["testenv_aws_tf_chef::default"]
+recreate_client = true
+node_name = "tfazonics.acc.come"
+server_url = "https://api.chef.io/organizations/deepakgurunathar"
+user_name = "azonics"
+user_key = "${file("C:\\Deepak\\chef-starter\\chef-repo\\.chef\\azonics.pem")}"
+ssl_verify_mode = ":verify_none"
+}
+}
+
+resource "aws_security_group" "Deepaksecurity"{
+name="Deepaksecurity"
+description="desc"
+ingress{
+from_port="0"
+to_port="0"
+protocol="-1"
+cidr_blocks=["0.0.0.0/0"]
+}
+egress{
+from_port="0"
+to_port="0"
+protocol="-1"
+cidr_blocks=["0.0.0.0/0"]
+}
+}
+
+resource "aws_key_pair" "Deepakkey"{
+	key_name = "Deepakkeypair"
+	public_key = "${file("C:\\Deepak\\deepak.pub")}"
+}
+
+output "Deepakpubliccip"{
+ value = "${aws_instance.Deepakterraform.public_ip}"
+}
+
+resource "aws_s3_bucket" "badmintonbucket"{
+bucket = "azonicsbucket"
+acl = "private"
+force_destroy="true"
+}
+
+terraform {
+backend "s3"{
+bucket = "azonicsbucket"
+key = "terraform.tfstate"
+region = "eu-west-1"
+}
+}
+
+
+
+
+
+
